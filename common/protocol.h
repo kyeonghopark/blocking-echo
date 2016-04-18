@@ -8,8 +8,6 @@
 namespace becho {
 class Protocol {
  public:
-  static const std::size_t kMaxMessageSize{1024};
-
   using MessageHeader = uint16_t;
   using NetConvertFunction = std::function<MessageHeader (MessageHeader)>;
   static const NetConvertFunction ntoh;

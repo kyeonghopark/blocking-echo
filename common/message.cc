@@ -40,10 +40,9 @@ void Message::SendBytes(tcp::socket *sock,
 
 std::string Message::ReceiveBytes(tcp::socket *sock,
                                   const std::size_t &buf_size) {
-  char msg[becho::Protocol::kMaxMessageSize];
-  std::size_t msg_size{
-      std::min<std::size_t>(buf_size, becho::Protocol::kMaxMessageSize)};
-  boost::asio::read(*sock, boost::asio::buffer(msg, msg_size));
-  return std::string(msg, msg_size);
+  std::string msg;
+  msg.resize(buf_size);
+  boost::asio::read(*sock, boost::asio::buffer(&msg[0], buf_size));
+  return std::move(msg);
 }
 }  // namespace becho
