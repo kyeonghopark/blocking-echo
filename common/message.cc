@@ -21,24 +21,24 @@ std::string Message::ReceiveMessage(tcp::socket *sock) {
 }
 
 
-void Message::SendString(tcp::socket *sock, const std::string &msg) {
+void Message::SendString(tcp::socket *sock, const std::string &str) {
   becho::Protocol::MessageHeader net_size{
       becho::Protocol::hton(
-          static_cast<becho::Protocol::MessageHeader>(msg.size()))};
+          static_cast<becho::Protocol::MessageHeader>(str.size()))};
   SendBytes(sock, reinterpret_cast<char *>(&net_size), sizeof(net_size));
-  SendBytes(sock, msg.c_str(), msg.size());
+  SendBytes(sock, str.c_str(), str.size());
 }
 
 
 std::string Message::ReceiveString(tcp::socket *sock) {
   std::string net_size{
       ReceiveBytes(sock, sizeof(becho::Protocol::MessageHeader))};
-  std::size_t msg_size{
+  std::size_t str_size{
       becho::Protocol::ntoh(
           *reinterpret_cast<const becho::Protocol::MessageHeader *>(
               net_size.c_str()))};
-  std::string msg{ReceiveBytes(sock, msg_size)};
-  return std::move(msg);
+  std::string str{ReceiveBytes(sock, str_size)};
+  return std::move(str);
 }
 
 
