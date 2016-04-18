@@ -15,18 +15,18 @@ void Message::SendMessage(tcp::socket *sock, const std::string &msg) {
 }
 
 
+std::string Message::ReceiveMessage(tcp::socket *sock) {
+  std::string msg{ReceiveString(sock)};
+  return std::move(msg);
+}
+
+
 void Message::SendString(tcp::socket *sock, const std::string &msg) {
   becho::Protocol::MessageHeader net_size{
       becho::Protocol::hton(
           static_cast<becho::Protocol::MessageHeader>(msg.size()))};
   SendBytes(sock, reinterpret_cast<char *>(&net_size), sizeof(net_size));
   SendBytes(sock, msg.c_str(), msg.size());
-}
-
-
-std::string Message::ReceiveMessage(tcp::socket *sock) {
-  std::string msg{ReceiveString(sock)};
-  return std::move(msg);
 }
 
 
