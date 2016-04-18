@@ -3,6 +3,9 @@
 #include "common/message.h"
 
 #include <algorithm>
+#include "boost/asio/read.hpp"
+#include "boost/asio/write.hpp"
+
 #include "common/protocol.h"
 
 

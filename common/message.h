@@ -4,7 +4,7 @@
 #define COMMON_MESSAGE_H_
 
 #include <string>
-#include "boost/asio.hpp"
+#include "boost/asio/ip/tcp.hpp"
 
 
 using boost::asio::ip::tcp;

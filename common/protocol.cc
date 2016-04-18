@@ -1,7 +1,7 @@
 // Copyright
 
 #include "common/protocol.h"
-#include <boost/asio.hpp>
+#include "boost/asio/socket_base.hpp"
 
 
 namespace becho {
