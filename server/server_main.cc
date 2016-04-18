@@ -19,7 +19,8 @@ void StartClientSession(tcp::socket sock) {
 
     std::string response{becho::Protocol::kSuccessResponse};
     becho::Message::SendMessage(&sock, response);
-  } catch (const std::exception &/*e*/) {
+  } catch (const std::exception &e) {
+    std::cerr << e.what() << std::endl;
   }
 }
 
