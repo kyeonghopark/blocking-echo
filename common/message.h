@@ -2,7 +2,7 @@
 #define BLOCKING_ECHO_SERVICE_COMMON_MESSAGE_H_
 
 #include <string>
-#include <boost/asio.hpp>
+#include "boost/asio.hpp"
 
 
 using boost::asio::ip::tcp;
