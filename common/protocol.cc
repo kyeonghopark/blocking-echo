@@ -1,3 +1,5 @@
+// Copyright
+
 #include "common/protocol.h"
 #include <boost/asio.hpp>
 

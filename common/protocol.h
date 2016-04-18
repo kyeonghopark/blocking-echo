@@ -1,3 +1,5 @@
+// Copyright
+
 #ifndef COMMON_PROTOCOL_H_
 #define COMMON_PROTOCOL_H_
 

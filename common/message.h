@@ -1,3 +1,5 @@
+// Copyright
+
 #ifndef COMMON_MESSAGE_H_
 #define COMMON_MESSAGE_H_
 

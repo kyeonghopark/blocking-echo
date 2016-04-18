@@ -1,3 +1,5 @@
+// Copyright
+
 #include "common/message.h"
 
 #include <algorithm>
