@@ -11,6 +11,11 @@
 
 namespace becho {
 void Message::SendMessage(tcp::socket *sock, const std::string &msg) {
+  SendString(sock, msg);
+}
+
+
+void Message::SendString(tcp::socket *sock, const std::string &msg) {
   becho::Protocol::MessageHeader net_size{
       becho::Protocol::hton(
           static_cast<becho::Protocol::MessageHeader>(msg.size()))};
@@ -20,6 +25,12 @@ void Message::SendMessage(tcp::socket *sock, const std::string &msg) {
 
 
 std::string Message::ReceiveMessage(tcp::socket *sock) {
+  std::string msg{ReceiveString(sock)};
+  return std::move(msg);
+}
+
+
+std::string Message::ReceiveString(tcp::socket *sock) {
   std::string net_size{
       ReceiveBytes(sock, sizeof(becho::Protocol::MessageHeader))};
   std::size_t msg_size{

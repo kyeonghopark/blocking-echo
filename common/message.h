@@ -17,6 +17,9 @@ class Message {
   static std::string ReceiveMessage(tcp::socket *sock);
 
  private:
+  static void SendString(tcp::socket *sock, const std::string &msg);
+  static std::string ReceiveString(tcp::socket *sock);
+
   static void SendBytes(tcp::socket *sock,
                         const char *buf,
                         const std::size_t &buf_size);
