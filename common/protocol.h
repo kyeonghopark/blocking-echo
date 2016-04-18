@@ -1,5 +1,5 @@
-#ifndef BLOCKING_ECHO_SERVICE_COMMON_PROTOCOL_H_
-#define BLOCKING_ECHO_SERVICE_COMMON_PROTOCOL_H_
+#ifndef COMMON_PROTOCOL_H_
+#define COMMON_PROTOCOL_H_
 
 #include <functional>
 
@@ -17,4 +17,4 @@ class Protocol {
 };
 }  // namespace becho
 
-#endif  // BLOCKING_ECHO_SERVICE_COMMON_PROTOCOL_H_
+#endif  // COMMON_PROTOCOL_H_

@@ -1,5 +1,5 @@
-#ifndef BLOCKING_ECHO_SERVICE_COMMON_MESSAGE_H_
-#define BLOCKING_ECHO_SERVICE_COMMON_MESSAGE_H_
+#ifndef COMMON_MESSAGE_H_
+#define COMMON_MESSAGE_H_
 
 #include <string>
 #include "boost/asio.hpp"
@@ -23,4 +23,4 @@ class Message {
 };
 }  // namespace becho
 
-#endif  // BLOCKING_ECHO_SERVICE_COMMON_MESSAGE_H_
+#endif  // COMMON_MESSAGE_H_
