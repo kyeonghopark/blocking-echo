@@ -20,14 +20,14 @@ void Message::SendMessage(tcp::socket *sock, const std::string &msg) {
 
 
 std::string Message::ReceiveMessage(tcp::socket *sock) {
-  std::string net_size =
-      ReceiveBytes(sock, sizeof(becho::Protocol::MessageHeader));
+  std::string net_size{
+      ReceiveBytes(sock, sizeof(becho::Protocol::MessageHeader))};
   std::size_t msg_size{
       becho::Protocol::ntoh(
           *reinterpret_cast<const becho::Protocol::MessageHeader *>(
               net_size.c_str()))};
-  std::string msg = ReceiveBytes(sock, msg_size);
-  return msg;
+  std::string msg{ReceiveBytes(sock, msg_size)};
+  return std::move(msg);
 }
 
 
