@@ -8,7 +8,7 @@
 namespace becho {
 class Protocol {
  public:
-  using MessageHeader = uint16_t;
+  using MessageHeader = unsigned long;  // NOLINT
   using NetConvertFunction = std::function<MessageHeader (MessageHeader)>;
   static const NetConvertFunction ntoh;
   static const NetConvertFunction hton;

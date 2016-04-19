@@ -5,8 +5,8 @@
 
 
 namespace becho {
-const Protocol::NetConvertFunction Protocol::ntoh{::ntohs};
-const Protocol::NetConvertFunction Protocol::hton{::htons};
+const Protocol::NetConvertFunction Protocol::ntoh{::ntohl};
+const Protocol::NetConvertFunction Protocol::hton{::htonl};
 
 const char *const Protocol::kSuccessResponse{"ok"};
 }  // namespace becho
