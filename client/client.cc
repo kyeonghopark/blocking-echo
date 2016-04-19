@@ -29,7 +29,7 @@ void Client::Run(const std::string &host,
   std::string response_file;
   std::tie(response, response_file) = becho::Message::ReceiveMessage(&sock);
   if (response != becho::Protocol::kSuccessResponse) {
-    std::cerr << "response: " << response << std::endl;
+    std::cerr << "response fail: " << response << std::endl;
     return;
   }
   std::cout << "response: " << response

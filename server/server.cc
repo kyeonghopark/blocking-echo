@@ -42,7 +42,7 @@ void Server::StartClientSession(tcp::socket sock) {
     std::string response{becho::Protocol::kSuccessResponse};
     becho::Message::SendMessage(&sock, response, response_file);
   } catch (const std::exception &e) {
-    std::cerr << e.what() << std::endl;
+    std::cerr << "exception: " << e.what() << std::endl;
   }
 }
 }  // namespace becho
