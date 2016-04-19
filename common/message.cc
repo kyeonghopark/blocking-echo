@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <fstream>
 #include "boost/asio/read.hpp"
+#include "boost/asio/socket_base.hpp"
 #include "boost/asio/write.hpp"
 
 #include "common/protocol.h"
@@ -16,9 +17,9 @@ void Message::SendMessage(tcp::socket *sock,
                           const std::string &file_name) {
   SendString(sock, msg);
   if (file_name.empty()) {
-    SendString(sock, becho::Protocol::kNoFileAttached);
+    SendString(sock, Protocol::kNoFileAttached);
   } else {
-    SendString(sock, becho::Protocol::kFileAttached);
+    SendString(sock, Protocol::kFileAttached);
     SendFile(sock, file_name);
   }
 }
@@ -29,7 +30,7 @@ std::tuple<std::string/*msg*/, std::string/*file_name*/>
   std::string msg{ReceiveString(sock)};
   std::string file_attached{ReceiveString(sock)};
   std::string file_name{""};
-  if (file_attached == becho::Protocol::kFileAttached) {
+  if (file_attached == Protocol::kFileAttached) {
     bool result{false};
     std::tie(result, file_name) = ReceiveFile(sock);
   }
@@ -61,9 +62,9 @@ std::tuple<bool/*result*/, std::string/*file_name*/>
 
 
 void Message::SendString(tcp::socket *sock, const std::string &str) {
-  becho::Protocol::MessageHeader net_size{
-      becho::Protocol::hton(
-          static_cast<becho::Protocol::MessageHeader>(str.size()))};
+  Protocol::MessageHeader net_size{
+      Protocol::hton(
+          static_cast<Protocol::MessageHeader>(str.size()))};
   SendBytes(sock, reinterpret_cast<char *>(&net_size), sizeof(net_size));
   SendBytes(sock, str.c_str(), str.size());
 }
@@ -71,10 +72,10 @@ void Message::SendString(tcp::socket *sock, const std::string &str) {
 
 std::string Message::ReceiveString(tcp::socket *sock) {
   std::string net_size{
-      ReceiveBytes(sock, sizeof(becho::Protocol::MessageHeader))};
+      ReceiveBytes(sock, sizeof(Protocol::MessageHeader))};
   std::size_t str_size{
-      becho::Protocol::ntoh(
-          *reinterpret_cast<const becho::Protocol::MessageHeader *>(
+      Protocol::ntoh(
+          *reinterpret_cast<const Protocol::MessageHeader *>(
               net_size.c_str()))};
   std::string str{ReceiveBytes(sock, str_size)};
   return std::move(str);
@@ -123,4 +124,11 @@ bool Message::WriteFile(const std::string &file_name,
   fs.close();
   return true;
 }
+
+
+const Message::Protocol::NetConvertFunction Message::Protocol::ntoh{::ntohl};
+const Message::Protocol::NetConvertFunction Message::Protocol::hton{::htonl};
+
+const char *const Message::Protocol::kFileAttached{"FileAttached"};
+const char *const Message::Protocol::kNoFileAttached{"NoFileAttached"};
 }  // namespace becho

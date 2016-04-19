@@ -21,6 +21,8 @@ class Message {
       ReceiveMessage(tcp::socket *sock);
 
  private:
+  class Protocol;
+
   static bool SendFile(tcp::socket *sock, const std::string &file_name);
   static std::tuple<bool/*result*/, std::string/*file_name*/>
       ReceiveFile(tcp::socket *sock);
@@ -37,6 +39,18 @@ class Message {
   static std::string ReadFile(const std::string &file_name);
   static bool WriteFile(const std::string &file_name,
                         const std::string &file_buf);
+};
+
+
+class Message::Protocol {
+ public:
+  using MessageHeader = unsigned long;  // NOLINT
+  using NetConvertFunction = std::function<MessageHeader (MessageHeader)>;
+  static const NetConvertFunction ntoh;
+  static const NetConvertFunction hton;
+
+  static const char *const kFileAttached;
+  static const char *const kNoFileAttached;
 };
 }  // namespace becho
 
