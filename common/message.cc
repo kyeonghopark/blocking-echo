@@ -3,6 +3,7 @@
 #include "common/message.h"
 
 #include <algorithm>
+#include <fstream>
 #include "boost/asio/read.hpp"
 #include "boost/asio/write.hpp"
 
@@ -10,14 +11,52 @@
 
 
 namespace becho {
-void Message::SendMessage(tcp::socket *sock, const std::string &msg) {
+void Message::SendMessage(tcp::socket *sock,
+                          const std::string &msg,
+                          const std::string &file_name) {
   SendString(sock, msg);
+  if (file_name.empty()) {
+    SendString(sock, becho::Protocol::kNoFileAttached);
+  } else {
+    SendString(sock, becho::Protocol::kFileAttached);
+    SendFile(sock, file_name);
+  }
 }
 
 
-std::string Message::ReceiveMessage(tcp::socket *sock) {
+std::tuple<std::string/*msg*/, std::string/*file_name*/>
+    Message::ReceiveMessage(tcp::socket *sock) {
   std::string msg{ReceiveString(sock)};
-  return std::move(msg);
+  std::string file_attached{ReceiveString(sock)};
+  std::string file_name{""};
+  if (file_attached == becho::Protocol::kFileAttached) {
+    bool result{false};
+    std::tie(result, file_name) = ReceiveFile(sock);
+  }
+  return std::make_tuple(std::move(msg), std::move(file_name));
+}
+
+
+bool Message::SendFile(tcp::socket *sock, const std::string &file_name) {
+  std::string file_buf{ReadFile(file_name)};
+  if (file_buf.empty()) {
+    return false;
+  }
+  SendString(sock, file_name);
+  SendString(sock, file_buf);
+  return true;
+}
+
+
+std::tuple<bool/*result*/, std::string/*file_name*/>
+    Message::ReceiveFile(tcp::socket *sock) {
+  std::string file_name{ReceiveString(sock)};
+  if (file_name.empty()) {
+    return std::make_tuple(false, "");
+  }
+  std::string file_buf{ReceiveString(sock)};
+  bool result{WriteFile(file_name, file_buf)};
+  return std::make_tuple(result, file_name);
 }
 
 
@@ -55,5 +94,33 @@ std::string Message::ReceiveBytes(tcp::socket *sock,
   msg.resize(buf_size);
   boost::asio::read(*sock, boost::asio::buffer(&msg[0], buf_size));
   return std::move(msg);
+}
+
+
+std::string Message::ReadFile(const std::string &file_name) {
+  std::ifstream fs{file_name, (std::ios::in | std::ios::binary)};
+  if (!fs) {
+    return "";
+  }
+  fs.seekg(0, std::ios::end);
+  std::size_t file_size{static_cast<std::size_t>(fs.tellg())};
+  std::string file_buf;
+  file_buf.resize(file_size);
+  fs.seekg(0, std::ios::beg);
+  fs.read(&file_buf[0], file_size);
+  fs.close();
+  return std::move(file_buf);
+}
+
+
+bool Message::WriteFile(const std::string &file_name,
+                        const std::string &file_buf) {
+  std::ofstream fs{file_name, (std::ios::out | std::ios::binary)};
+  if (!fs) {
+    return false;
+  }
+  fs.write(file_buf.data(), file_buf.size());
+  fs.close();
+  return true;
 }
 }  // namespace becho

@@ -11,7 +11,8 @@ class Client {
  public:
   void Run(const std::string &host,
            const std::string &service,
-           const std::string &request);
+           const std::string &request,
+           const std::string &file_name);
 };
 }  // namespace becho
 #endif  // CLIENT_CLIENT_H_

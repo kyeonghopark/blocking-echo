@@ -13,6 +13,9 @@ class Protocol {
   static const NetConvertFunction ntoh;
   static const NetConvertFunction hton;
 
+  static const char *const kFileAttached;
+  static const char *const kNoFileAttached;
+
   static const char *const kSuccessResponse;
 };
 }  // namespace becho

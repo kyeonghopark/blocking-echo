@@ -3,6 +3,7 @@
 #include "server/server.h"
 
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <thread>  // NOLINT
 
@@ -25,11 +26,21 @@ void Server::Run(const uint16_t &port) {
 
 void Server::StartClientSession(tcp::socket sock) {
   try {
-    const std::string &request = becho::Message::ReceiveMessage(&sock);
-    std::cout << "request: " << request << std::endl;
+    std::string request;
+    std::string request_file;
+    std::tie(request, request_file) = becho::Message::ReceiveMessage(&sock);
+    std::cout << "request: " << request
+              << "request_file: " << request_file << std::endl;
+
+    std::string response_file{request_file + ".ECHO"};
+    if (!request_file.empty()) {
+      std::stringstream ss;
+      ss << "MOVE /Y \"" << request_file << "\" \"" << response_file << "\"";
+      std::system(ss.str().c_str());
+    }
 
     std::string response{becho::Protocol::kSuccessResponse};
-    becho::Message::SendMessage(&sock, response);
+    becho::Message::SendMessage(&sock, response, response_file);
   } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
   }
